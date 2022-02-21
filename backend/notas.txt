@@ -1,0 +1,4 @@
+OBS-baixar o node na sua máquina
+
+21/02/2022 - (João - Igor - Victor) axios e react estão implementados no package.json
+
