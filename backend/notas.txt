@@ -1,3 +1,0 @@
-OBS-baixar o node na sua máquina
-
-API key rawg.io = c08f80574bca406bbcf96b7e452b3e91
