@@ -17,7 +17,14 @@
   },
   "homepage": "https://github.com/DS-FeudoVerdePantano/GameReview-Back#readme",
   "dependencies": {
+    "axios": "^0.26.0",
+    "body-parser": "^1.19.2",
+    "express": "^4.17.3",
     "mongoose": "^6.2.1",
-    "nodemon": "^2.0.15"
+    "react": "^17.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15",
+    "yarn": "^1.22.17"
   }
 }
