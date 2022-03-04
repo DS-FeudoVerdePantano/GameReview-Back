@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
     res.send("O VASCAO TA GIGANTE 700 MILHA RAPA");
 });
 
-require('./controllers/authController')(app);
-require('./controllers/tokenController')(app);
+require('./app/controllers/authController')(app);
+require('./app/controllers/tokenController')(app);
 
 app.listen(3333, () => console.log("server started at http://localhost:3333"));

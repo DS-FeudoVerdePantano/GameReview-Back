@@ -1,15 +1,14 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { route } = require('express/lib/application');
 const User = require('../models/user');
-const authConfig = require('../config/auth.json');
+const authConfig = require('../../config/auth.json');
 
 const router = express.Router();
 
 function tokenGenerator(params = {}) {
     return jwt.sign(params, authConfig.secret, {
-        expiresIn: 50000,
+        expiresIn: 7200,
     } );
 }
 
@@ -18,7 +17,7 @@ router.post('/register', async (req,res) => {
     
     try {
         if (await User.findOne({email})) {
-            return res.status(400).json({error: 'User already exists'});
+        return res.status(400).json({error: 'User already exists'});
         };
 
         const user = await User.create(req.body);
@@ -46,5 +45,6 @@ router.post('/authenticate', async (req, res) => {
     res.send({user, token: tokenGenerator({ id: user.id})});
 
 });
+
 
 module.exports = app => app.use('/auth', router);
