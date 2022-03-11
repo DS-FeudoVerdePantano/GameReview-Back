@@ -1,3 +1,5 @@
+//Arquivo responsavel por unificar as rotas para o arquivo index, facilitando as exportações
+
 const fs = require('fs');
 const path = require('path');
 

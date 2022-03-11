@@ -1,3 +1,5 @@
+// Arquivo responsavel por se conectar à base de dados
+
 const mongoose = require('mongoose');
 
 function connectToDatabase() {

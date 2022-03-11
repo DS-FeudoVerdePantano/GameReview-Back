@@ -1,17 +1,22 @@
+//Arquivo responsável pelas rotas referentes a autenticação
+
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const _ = require('lodash')
 const User = require('../models/user');
 const authConfig = require('../../config/auth.json');
+const authMiddleware = require('../middlewares/auth');
 
 const router = express.Router();
 
 function tokenGenerator(params = {}) {
-    return jwt.sign(params, authConfig.secret, {
+    return jwt.sign(params, authConfig.authSecret, {
         expiresIn: 7200,
     } );
-}
+};
 
+//rota de criação de novo usuario
 router.post('/register', async (req,res) => {
     const {email} = req.body;
     
@@ -31,6 +36,7 @@ router.post('/register', async (req,res) => {
     };
 });
 
+//rota de login
 router.post('/authenticate', async (req, res) => {
     const { email, password } = req.body;
 
@@ -39,12 +45,53 @@ router.post('/authenticate', async (req, res) => {
     if (!user || !await bcrypt.compare(password, user.password) ) {
         return res.status(400).json({error: 'Invalid email or password'});
     };
-       
+    
     user.password = undefined;
 
     res.send({user, token: tokenGenerator({ id: user.id})});
 
 });
+
+router.put('/change-password', (req,res) => {
+    const {resetLink, newPassword} = req.body;
+
+    if(resetLink){
+        jwt.verify(resetLink, authConfig.resetpassSecret, (error, success) => {
+            
+            if (error) {
+                return res.status(400).json({error: 'Token invalid or expired'});
+            }else{
+                User.findOne({resetLink}, (error, user) => {
+                    if (!user) {
+                        return res.status(400).json({error: 'No user with this token'});
+                    }else{
+                        const obj = {
+                            password: newPassword,
+                            resetLink: ''
+                        }
+
+                        user = _.extend(user, obj);
+                        user.save((error, result) => {
+                            if (error) {
+                                return res.status(400).json({error: 'Reset password error'});
+                            } else {
+                                return res.status(200).json(
+                                    {message:'password changed succesfully'}
+                                );
+                            }
+                    })
+                    
+                }}).select('+password');
+                
+            }
+        })
+
+    }else{
+        return res.status(400).json({error: 'Invalid token'});
+    };
+
+})
+
 
 
 module.exports = app => app.use('/auth', router);

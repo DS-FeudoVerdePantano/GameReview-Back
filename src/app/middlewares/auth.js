@@ -1,7 +1,9 @@
+//Middleware responsável por checar se o token de sessão válido está ativo
+
 const jwt = require('jsonwebtoken');
 const authConfig = require('../../config/auth.json');
 
-module.exports = authMiddleware = (req, res, next) => {
+module.exports = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -10,7 +12,7 @@ module.exports = authMiddleware = (req, res, next) => {
 
     const token = authHeader;
 
-    jwt.verify(token, authConfig.secret, (err, decoded) => {
+    jwt.verify(token, authConfig.authSecret, (err, decoded) => {
         if(err) {
             return res.status(401).json({ error: 'Token invalid'})
         };
