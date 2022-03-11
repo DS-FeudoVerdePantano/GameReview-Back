@@ -1,8 +1,10 @@
+// TRABALHA COM ROTAS QUE REQUEREM AUTENTICAÇÃO;
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const authConfig = require('../../config/auth.json');
+const authMiddleware = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -44,6 +46,12 @@ router.post('/authenticate', async (req, res) => {
 
     res.send({user, token: tokenGenerator({ id: user.id})});
 
+});
+
+router.use(authMiddleware);
+
+router.delete('/delete', async (req, res) => {
+    res.send({ user: req.userId });
 });
 
 
