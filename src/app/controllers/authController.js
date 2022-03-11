@@ -51,7 +51,14 @@ router.post('/authenticate', async (req, res) => {
 router.use(authMiddleware);
 
 router.delete('/delete', async (req, res) => {
-    res.send({ user: req.userId });
+    try{
+
+        await User.findByIdAndRemove(req.params.userId); 
+      
+        return res.send();
+    }catch (error) {
+        return res.status(400).json({error: 'error deleting user'}); 
+    };
 });
 
 
