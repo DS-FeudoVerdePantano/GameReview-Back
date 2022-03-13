@@ -10,7 +10,7 @@ const router = express.Router();
 
 function tokenGenerator(params = {}) {
     return jwt.sign(params, authConfig.secret, {
-        expiresIn: 7200,
+        expiresIn: 10800,
     } );
 }
 
@@ -41,25 +41,35 @@ router.post('/authenticate', async (req, res) => {
     if (!user || !await bcrypt.compare(password, user.password) ) {
         return res.status(400).json({error: 'Invalid email or password'});
     };
-       
+    
     user.password = undefined;
 
     res.send({user, token: tokenGenerator({ id: user.id})});
 
 });
 
+//checa se o token é válido, tudo abaixo daqui necessita ter um token para funcionar
 router.use(authMiddleware);
 
-router.delete('/delete', async (req, res) => {
-    try{
+router.get('/:userId', async (req,res) =>{
+    try {
+        const user = await User.findById(req.params.userId);
 
-        await User.findByIdAndRemove(req.params.userId); 
-      
-        return res.send();
-    }catch (error) {
-        return res.status(400).json({error: 'error deleting user'}); 
-    };
+        return res.send({user})
+    } catch (error) {
+        return res.status(400).json({error: 'error showing the user'})
+    }
 });
+
+router.delete('/:userId', async (req,res) =>{
+    try {
+        await User.findByIdAndRemove(req.params.userId);
+
+        return res.send()
+    } catch (error) {
+        return res.status(400).json({error: 'error deleting the user'})
+    }
+})
 
 
 module.exports = app => app.use('/auth', router);
