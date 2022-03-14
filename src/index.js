@@ -1,9 +1,9 @@
+//Arquivo responsável por inicializar a aplicação, servindo como
+
 require("dotenv").config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const { response } = require('express');
-const mongoose = require('mongoose');
 const connectToDatabase = require('./database');
 
 connectToDatabase();
@@ -17,7 +17,6 @@ app.get('/', (req, res) => {
     res.send("O VASCAO TA GIGANTE 700 MILHA RAPA");
 });
 
-require('./app/controllers/authController')(app);
-require('./app/controllers/tokenController')(app);
+require('./app/controllers/routes')(app);
 
 app.listen(3333, () => console.log("server started at http://localhost:3333"));

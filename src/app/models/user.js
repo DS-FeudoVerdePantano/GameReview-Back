@@ -1,6 +1,8 @@
+//Arquivo responsável por delimitar os parâmetros dos dados da base de dados
+// Nesse caso, aqui esta o modelo do dado de usuário
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -22,6 +24,10 @@ const UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    resetLink: {
+        data: String,
+        default: ''
+    }
 });
 
 UserSchema.pre('save', async function(next){
