@@ -61,6 +61,22 @@ router.get('/:userId', async (req,res) =>{
     }
 });
 
+router.put('/:userId', async (req,res) =>{
+    try {
+        const { name, email, password } = req.body;
+
+        const user = await User.findByIdAndUpdate(req.params.userId, {
+            name,
+            email,
+            password
+        }, { new: true });
+ 
+        return res.send({ user });
+    }catch (error) {
+        return res.status(400).json({error: 'error updating the user'})
+    }
+});
+
 router.delete('/:userId', async (req,res) =>{
     try {
         await User.findByIdAndRemove(req.params.userId);
