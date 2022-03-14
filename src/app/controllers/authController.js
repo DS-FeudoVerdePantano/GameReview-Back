@@ -3,7 +3,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const _ = require('lodash')
+const _ = require('lodash');
 const User = require('../models/user');
 const authConfig = require('../../config/auth.json');
 const authMiddleware = require('../middlewares/auth');
@@ -14,7 +14,7 @@ function tokenGenerator(params = {}) {
     return jwt.sign(params, authConfig.authSecret, {
         expiresIn: 7200,
     } );
-};
+}
 
 //rota de criação de novo usuario
 router.post('/register', async (req,res) => {
@@ -22,8 +22,8 @@ router.post('/register', async (req,res) => {
     
     try {
         if (await User.findOne({email})) {
-        return res.status(400).json({error: 'User already exists'});
-        };
+            return res.status(400).json({error: 'User already exists'});
+        }
 
         const user = await User.create(req.body);
 
@@ -33,7 +33,7 @@ router.post('/register', async (req,res) => {
     
     } catch (error) {
         return res.status(400).json({error: 'Registration failed'});
-    };
+    }
 });
 
 //rota de login
@@ -44,7 +44,7 @@ router.post('/authenticate', async (req, res) => {
 
     if (!user || !await bcrypt.compare(password, user.password) ) {
         return res.status(400).json({error: 'Invalid email or password'});
-    };
+    }
     
     user.password = undefined;
 
@@ -68,7 +68,7 @@ router.put('/change-password', (req,res) => {
                         const obj = {
                             password: newPassword,
                             resetLink: ''
-                        }
+                        };
 
                         user = _.extend(user, obj);
                         user.save((error, result) => {
@@ -79,18 +79,18 @@ router.put('/change-password', (req,res) => {
                                     {message:'password changed succesfully'}
                                 );
                             }
-                    })
+                    });
                     
                 }}).select('+password');
                 
             }
-        })
+        });
 
     }else{
         return res.status(400).json({error: 'Invalid token'});
-    };
+    }
 
-})
+});
 
 
 
