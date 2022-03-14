@@ -44,15 +44,17 @@ router.put('/forgot-password', (req,res) => {
 
     const user = User.findOne({email}, (error, User) => {
         if(error || !User) {
+            console.log("Email not found in database");
             return res.status(400).json({error: 'Invalid email'});
         }
     });
 
     const emailToken = jwt.sign({ _id: user._id }, authConfig.resetpassSecret, {expiresIn: 1200,} );
     
-    return User.updateOne({email}, {resetLink: emailToken}, (error, success) =>  {
-        if(error) {
-            return res.status(400).json({error: 'reset password error'});
+    User.updateOne({email}, {resetLink: emailToken}, (error, success) =>  {
+        if(error || res.statusCode == 400) {
+            console.log("reset password error");
+            return; // Exits the function
         } else { 
             sendEmail(email, emailToken);
             console.log("enviou o email");
