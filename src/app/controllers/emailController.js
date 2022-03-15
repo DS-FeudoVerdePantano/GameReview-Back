@@ -53,7 +53,7 @@ router.put('/forgot-password', (req,res) => {
 
     User.updateOne({email}, {resetLink: emailToken}, (error, success) => {
         if(res.statusCode === 401) {
-            return; // Exits the function, status Code has already been set to 400: Invalid Email
+            return; // Exits the function, status Code has already been set to 401: Invalid Email
         } else if(error){
             console.log("reset password error");
             return res.status(500).json({error: 'reset password error'});
