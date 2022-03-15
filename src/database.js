@@ -1,4 +1,4 @@
-// Arquivo responsavel por se conectar à base de dados
+// File resposible for database connection
 
 const mongoose = require('mongoose');
 
