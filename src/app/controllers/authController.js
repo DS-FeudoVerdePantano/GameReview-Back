@@ -16,6 +16,8 @@ function tokenGenerator(params = {}) {
     } );
 }
 
+
+
 //rota de criação de novo usuario
 router.post('/register', async (req,res) => {
     const {email} = req.body;
@@ -90,6 +92,14 @@ router.put('/change-password', (req,res) => {
         return res.status(400).json({error: 'Invalid token'});
     }
 
+});
+
+router.post('/logout/:userId',async (req,res) =>{
+    const user = await User.findById(req.params.userId);
+
+    const logoutToken =jwt.sign({ _id: user._id }, authConfig.authSecret, {expiresIn: 1} );
+
+    res.send({user, logoutToken});
 });
 
 
