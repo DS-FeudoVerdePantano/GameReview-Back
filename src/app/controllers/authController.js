@@ -30,7 +30,7 @@ router.post('/register', async (req,res) => {
     
     } catch (error) {
         return res.status(400).json({error: 'Registration failed'});
-    };
+    }
 });
 
 router.post('/authenticate', async (req, res) => {
@@ -40,7 +40,7 @@ router.post('/authenticate', async (req, res) => {
 
     if (!user || !await bcrypt.compare(password, user.password) ) {
         return res.status(400).json({error: 'Invalid email or password'});
-    };
+    }
     
     user.password = undefined;
 
@@ -85,7 +85,7 @@ router.delete('/:userId', async (req,res) =>{
     } catch (error) {
         return res.status(400).json({error: 'error deleting the user'})
     }
-})
+});
 
 
 module.exports = app => app.use('/auth', router);

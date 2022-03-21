@@ -6,11 +6,13 @@ const bodyParser = require('body-parser');
 const { response } = require('express');
 const mongoose = require('mongoose');
 const connectToDatabase = require('./database');
+const cors = require("cors");
 
 connectToDatabase();
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
