@@ -92,6 +92,54 @@ router.put('/change-password', (req,res) => {
 
 });
 
+//checa se o token é válido, tudo abaixo daqui necessita ter um token para funcionar
+router.use(authMiddleware);
 
+
+router.post('/logout/:userId',async (req,res) =>{
+    const user = await User.findById(req.params.userId);
+
+    const logoutToken =jwt.sign({ _id: user._id }, authConfig.authSecret, {expiresIn: 1} );
+
+    res.send({user, logoutToken});
+});
+
+
+router.get('/:userId', async (req,res) =>{
+    try {
+        const user = await User.findById(req.params.userId);
+
+        return res.send({user})
+    } catch (error) {
+        return res.status(400).json({error: 'error showing the user'})
+    }
+});
+
+router.put('/:userId', async (req,res) =>{
+    try {
+        const { name, email, password } = req.body;
+
+        const user = await User.findByIdAndUpdate(req.params.userId, {
+            name,
+            email,
+            password
+        }, { new: true });
+ 
+        return res.send({ user });
+    }catch (error) {
+        return res.status(400).json({error: 'error updating the user'})
+    }
+});
+
+router.delete('/:userId', async (req,res) =>{
+    try {
+        await User.findByIdAndRemove(req.params.userId);
+
+
+        return res.send()
+    } catch (error) {
+        return res.status(400).json({error: 'error deleting the user'})
+    }
+});
 
 module.exports = app => app.use('/auth', router);
