@@ -16,7 +16,7 @@ const router = express.Router();
 
 function tokenGenerator(params = {}) {
 
-    return jwt.sign(params, authConfig.secret, {
+    return jwt.sign(params, authConfig.authSecret, {
         expiresIn: 10800,
 
     } );
@@ -38,7 +38,7 @@ router.post('/register', async (req,res) => {
         return res.send({user, token: tokenGenerator({ id: user.id})});
     
     } catch (error) {
-        return res.status(400).json({error: 'Registration failed'});
+        return res.status(401).json({error: 'Registration failed'});
     }
 });
 
@@ -69,7 +69,7 @@ router.put('/change-password', (req,res) => {
             }else{
                 User.findOne({resetLink}, (error, user) => {
                     if (!user) {
-                        return res.status(400).json({error: 'No user with this token'});
+                        return res.status(405).json({error: 'No user with this token'});
                     }else{
                         const obj = {
                             password: newPassword,
@@ -79,7 +79,7 @@ router.put('/change-password', (req,res) => {
                         user = _.extend(user, obj);
                         user.save((error, result) => {
                             if (error) {
-                                return res.status(400).json({error: 'Reset password error'});
+                                return res.status(406).json({error: 'Reset password error'});
                             } else {
                                 return res.status(200).json(
                                     {message:'password changed succesfully'}
@@ -93,7 +93,7 @@ router.put('/change-password', (req,res) => {
         });
 
     }else{
-        return res.status(400).json({error: 'Invalid token'});
+        return res.status(403).json({error: 'Invalid token'});
     }
 
 });
@@ -120,7 +120,7 @@ router.put('/:userId', async (req,res) =>{
             email,
             password
         }, { new: true });
- 
+        
         return res.send({ user });
     }catch (error) {
         return res.status(400).json({error: 'error updating the user'})

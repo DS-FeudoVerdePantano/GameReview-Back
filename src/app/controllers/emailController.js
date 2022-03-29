@@ -52,7 +52,7 @@ router.put('/forgot-password', (req,res) => {
     
     return User.updateOne({email}, {resetLink: emailToken}, (error, success) =>  {
         if(error) {
-            return res.status(400).json({error: 'reset password error'});
+            return res.status(401).json({error: 'reset password error'});
         } else { 
             sendEmail(email, emailToken);
             console.log("enviou o email");
