@@ -16,7 +16,7 @@ const router = express.Router();
 
 function tokenGenerator(params = {}) {
 
-    return jwt.sign(params, authConfig.secret, {
+    return jwt.sign(params, authConfig.authSecret, {
         expiresIn: 10800,
 
     } );
