@@ -134,6 +134,13 @@ router.put('/:userId', async (req,res) =>{
             email,
             password
         }, { new: true });
+
+        user.pre('save', async function(next){
+            const hash = await bcrypt.hash(this.password, 15);
+            this.password = hash;
+        
+            next();
+        });
  
         return res.send({ user });
     }catch (error) {
