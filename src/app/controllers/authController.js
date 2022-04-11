@@ -16,13 +16,11 @@ const router = express.Router();
 
 function tokenGenerator(params = {}) {
 
-    return jwt.sign(params, authConfig.secret, {
+    return jwt.sign(params, authConfig.authSecret, {
         expiresIn: 10800,
 
     } );
 }
-
-
 
 //rota de criação de novo usuario
 router.post('/register', async (req,res) => {
@@ -100,20 +98,8 @@ router.put('/change-password', (req,res) => {
 
 });
 
-
-
 //checa se o token é válido, tudo abaixo daqui necessita ter um token para funcionar
 router.use(authMiddleware);
-
-
-router.post('/logout/:userId',async (req,res) =>{
-    const user = await User.findById(req.params.userId);
-
-    const logoutToken =jwt.sign({ _id: user._id }, authConfig.authSecret, {expiresIn: 1} );
-
-    res.send({user, logoutToken});
-});
-
 
 router.get('/:userId', async (req,res) =>{
     try {
@@ -134,6 +120,13 @@ router.put('/:userId', async (req,res) =>{
             email,
             password
         }, { new: true });
+
+        user.pre('save', async function(next){
+            const hash = await bcrypt.hash(this.password, 15);
+            this.password = hash;
+
+            next();
+        });
  
         return res.send({ user });
     }catch (error) {
@@ -144,7 +137,6 @@ router.put('/:userId', async (req,res) =>{
 router.delete('/:userId', async (req,res) =>{
     try {
         await User.findByIdAndRemove(req.params.userId);
-
 
         return res.send()
     } catch (error) {

@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
 
     const token = authHeader;
 
-    jwt.verify(token, authConfig.secret, (error, decoded) => {
+    jwt.verify(token, authConfig.authSecret, (error, decoded) => {
         if(error) {
 
             return res.status(401).json({ error: 'Token invalid'});
