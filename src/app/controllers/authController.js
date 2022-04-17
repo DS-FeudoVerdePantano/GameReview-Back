@@ -5,7 +5,6 @@
 
 
 const express = require('express');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const User = require('../models/user');
@@ -48,7 +47,7 @@ router.post('/authenticate', async (req, res) => {
 
     const user = await User.findOne({ email }).select('+password');
 
-    if (!user || !await bcrypt.compare(password, user.password) ) {
+    if (!user) {
         return res.status(400).json({error: 'Invalid email or password'});
     }
     
